@@ -29,12 +29,13 @@ public:
 
 vector<Student> records;
 
-// Load student records from file (create file if missing)
+// Load student records from file 
+// (create file if missing)
 void loadFromFile() {
     ifstream file("records.txt");
 
     if (!file) {
-        ofstream newFile("records.txt"); // create the file
+        ofstream newFile("records.txt"); 
         newFile.close();
         return;
     }
@@ -44,11 +45,11 @@ void loadFromFile() {
     float cgpa;
 
     while (file >> roll) {
-        file.ignore(); // skip space
+        file.ignore(); 
         getline(file, name);
         getline(file, branch);
         file >> cgpa;
-        file.ignore(); // skip newline after CGPA
+        file.ignore(); 
         records.emplace_back(roll, name, branch, cgpa);
     }
 
@@ -79,7 +80,7 @@ void addStudent() {
     cout << "------------------------------\n";
     cout << "Enter Roll No: ";
     cin >> roll;
-    cin.ignore(); // important before getline()
+    cin.ignore(); 
 
     cout << "Enter Name: ";
     getline(cin, name);
