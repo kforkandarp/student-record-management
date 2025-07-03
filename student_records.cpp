@@ -7,6 +7,7 @@
 
 using namespace std;
 
+// Student class
 class Student {
 public:
     int rollNo;
@@ -19,22 +20,21 @@ public:
 
     void display() const {
         cout << left << setw(10) << rollNo
-             << setw(20) << name
-             << setw(15) << branch
-             << fixed << setprecision(2)
+             << setw(25) << name
+             << setw(25) << branch
+             << right << setw(6) << fixed << setprecision(2)
              << cgpa << "\n";
     }
 };
 
 vector<Student> records;
 
-// Load student records from file in parent directory
+// Load student records from file (create file if missing)
 void loadFromFile() {
-    ifstream file("../records.txt");
+    ifstream file("records.txt");
 
     if (!file) {
-        // If not found, create the file in parent directory
-        ofstream newFile("../records.txt");
+        ofstream newFile("records.txt"); // create the file
         newFile.close();
         return;
     }
@@ -43,19 +43,27 @@ void loadFromFile() {
     string name, branch;
     float cgpa;
 
-    while (file >> roll >> name >> branch >> cgpa) {
+    while (file >> roll) {
+        file.ignore(); // skip space
+        getline(file, name);
+        getline(file, branch);
+        file >> cgpa;
+        file.ignore(); // skip newline after CGPA
         records.emplace_back(roll, name, branch, cgpa);
     }
 
     file.close();
 }
 
-// Save student records to file in parent directory
+// Save student records to file
 void saveToFile() {
-    ofstream file("../records.txt");
+    ofstream file("records.txt");
 
     for (const auto& s : records) {
-        file << s.rollNo << " " << s.name << " " << s.branch << " " << s.cgpa << "\n";
+        file << s.rollNo << "\n"
+             << s.name << "\n"
+             << s.branch << "\n"
+             << s.cgpa << "\n";
     }
 
     file.close();
@@ -71,10 +79,14 @@ void addStudent() {
     cout << "------------------------------\n";
     cout << "Enter Roll No: ";
     cin >> roll;
+    cin.ignore(); // important before getline()
+
     cout << "Enter Name: ";
-    cin >> name;
+    getline(cin, name);
+
     cout << "Enter Branch: ";
-    cin >> branch;
+    getline(cin, branch);
+
     cout << "Enter CGPA: ";
     cin >> cgpa;
 
@@ -112,12 +124,12 @@ void searchStudent() {
     for (const auto& s : records) {
         if (s.rollNo == roll) {
             cout << "\nStudent Details\n";
-            cout << "------------------------------\n";
+            cout << "---------------------------------------------------------------\n";
             cout << left << setw(10) << "Roll No"
-                 << setw(20) << "Name"
-                 << setw(15) << "Branch"
-                 << "CGPA\n";
-            cout << "------------------------------\n";
+                 << setw(25) << "Name"
+                 << setw(25) << "Branch"
+                 << right << setw(6) << "CGPA\n";
+            cout << "---------------------------------------------------------------\n";
             s.display();
             return;
         }
@@ -129,8 +141,7 @@ void searchStudent() {
 // List all students
 void listStudents() {
     cout << "\nAll Student Records\n";
-    cout << "---------------------------------------------\n";
-    
+    cout << "--------------------------------------------------------------------------\n";
 
     if (records.empty()) {
         cout << "No records available.\n";
@@ -143,10 +154,10 @@ void listStudents() {
          });
 
     cout << left << setw(10) << "Roll No"
-         << setw(20) << "Name"
-         << setw(15) << "Branch"
-         << "CGPA\n";
-    cout << "-----------------------------------------------------\n";
+         << setw(25) << "Name"
+         << setw(25) << "Branch"
+         << right << setw(6) << "CGPA\n";
+    cout << "--------------------------------------------------------------------------\n";
 
     for (const auto& s : records) s.display();
 }
